@@ -19,8 +19,14 @@ https://github.com/EnableTech/raspberry-bluetooth-demo
 3) sudo hciconfig hci0 piscan
 4) (Give it a name) sudo hciconfig hci0 name 'new name (dont use any single quotes/apostrophes in the name)'
 
+LED Color Meaning
+Green = Connected to Bluetooth Device
+Purple = Consuming a message
+Red = Publishing a message
+
 SPECIAL NOTE FOR ADAM:
 To get your damned rabbitmq working
 1) cd /usr/sbin
 2) sudo ./rabbitmqctl stop
 3) sudo ./rabbitmq-server start
+
