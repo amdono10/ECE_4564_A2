@@ -18,3 +18,9 @@ https://github.com/EnableTech/raspberry-bluetooth-demo
 2) sudo hciconfig hci0 up
 3) sudo hciconfig hci0 piscan
 4) (Give it a name) sudo hciconfig hci0 name 'new name (dont use any single quotes/apostrophes in the name)'
+
+SPECIAL NOTE FOR ADAM:
+To get your damned rabbitmq working
+1) cd /usr/sbin
+2) sudo ./rabbitmqctl stop
+3) sudo ./rabbitmq-server start
