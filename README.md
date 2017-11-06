@@ -23,3 +23,10 @@ LED Color Meaning
 Green = Connected to Bluetooth Device
 Purple = Consuming a message
 Red = Publishing a message
+
+SPECIAL NOTE FOR ADAM:
+To get your damned rabbitmq working
+1) cd /usr/sbin
+2) sudo ./rabbitmqctl stop
+3) sudo ./rabbitmq-server start
+
