@@ -6,10 +6,11 @@
 
 **Syntax for using this project**
 
-Invoke the repository.py file like this: python3 repository.py
-    * There are no arguments passed as the GPIO portion is now done on via terminal output
-Invoke the bridge.py file like this: sudo python3 bridge.py <RabbitMQ host IP address>
-    * The program does not expect a flag before the ip address
+Invoke the repository.py file like this: `python3 repository.py`
+   * There are no arguments passed as the GPIO portion is now done on via terminal output
+   
+Invoke the bridge.py file like this: `sudo python3 bridge.py <RabbitMQ host IP address>`
+   * The program does not expect a flag before the ip address
  
 
 Blue tooth python tutorial:
