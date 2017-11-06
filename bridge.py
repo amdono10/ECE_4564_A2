@@ -46,6 +46,7 @@ print("[Checkpoint 02] Connected to vhost %s on RMQ server at %s as user %s" % (
 
 # Bluetooth overhead
 server_sock=BluetoothSocket( RFCOMM )
+#server_sock.setsockopt(server_sock.SOL_SOCKET, server_sock.SO_REUSEADDR, 1)
 server_sock.bind(("",1))
 server_sock.listen(1)
 port = server_sock.getsockname()[1]
@@ -62,8 +63,9 @@ advertise_service( server_sock, "SampleServer",
 client_sock, client_info = server_sock.accept()
 print("[Checkpoint 04] Accepted RFCOMM bluetooth connection from  ", client_info)
 print("Simulate LED green flash")
-blueSend('\n\n\n', client_sock)
+blueSend('\n\n', client_sock)
 blueSend('Communicating on exchange %s' % exchange, client_sock)
+blueSend('\n', client_sock)
 blueSend('Available queues are: %s' % queues, client_sock)
 
 def callback(ch, method, properties, body):
