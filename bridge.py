@@ -3,7 +3,8 @@ from bluetooth import *
 import pika
 from rmq_params import rmq_params
 import sys
-
+from pymongo import MongoClient
+import time
 
 # function to send a string to the bluetooth device
 # INPUT: string to send, and client socket
@@ -12,10 +13,10 @@ def blueSend(sendString, client_sock):
 
 # function to return a string that was received from the bluetooth device
 # INPUT: the bluetooth server_socket
-def blueReceive(client_sock):
+def blueReceive(client_sock, client_add):
     gots = ''
     data = ''
-    while(data != b'\n'):
+    while(data != b'\n' and is_valid_address(client_add)):
         data = client_sock.recv(1024)
         if(data == b' '):
             gots += ' '
@@ -40,7 +41,11 @@ print("valid credentials")
 parameters = pika.ConnectionParameters(credentials = credentials, host = ip)
 print("valid parameters")
 connection = pika.BlockingConnection(parameters)
-#print("[Checkpoint 01] Connected to database %s on MongoDB server at %s" % exchange, ip)
+
+mongoClient = MongoClient()
+db = mongoClient.exchange
+
+print("[Checkpoint 01] Connected to database %s on MongoDB server at 'local host'" % (db))
 channel = connection.channel()
 print("[Checkpoint 02] Connected to vhost %s on RMQ server at %s as user %s" % (vhost, ip, username))
 
@@ -76,7 +81,7 @@ def callback(ch, method, properties, body):
 
 clientAdd = client_info[0]
 
-post = blueReceive(client_sock)
+post = blueReceive(client_sock, clientAdd)
 while(is_valid_address(clientAdd)):
     if(post[0] == 'p'):
         #publish command
@@ -89,6 +94,18 @@ while(is_valid_address(clientAdd)):
             channel.basic_publish(exchange=exchange,
                               routing_key=tempQueue,
                               body=message)
+            ticks = time.time()
+            msgID = "14"+"$"+str(ticks)
+            obj = {
+                "Action": "p",
+                "Place": exchange,
+                "MsgID": msgID,
+                "Subject": tempQueue,
+                "Message": message
+            }
+            clltempQueue = db.libs
+            clltempQueue.insert(obj)
+
         else:
             blueSend('Invalid message queue\n')
     elif(post[0] == 'c'):
@@ -96,10 +113,16 @@ while(is_valid_address(clientAdd)):
         tempQueue = post.split(':')[1]
         channel.basic_consume(callback, queue=tempQueue, no_ack=True)
 
+    elif(post[0] == 'h'):
+        #history
+         clltempQueue = db.libs
+         print('[Checkpoint h-01] Printing history of collection %s in MongoDB database %s' % (db.collection_names()[1], exchange))
+         for el in clltempQueue.find():
+             print(el)
     else:
         print('Invalid input. Try again NOOB')
 
-    post=blueReceive(client_sock)
+    post=blueReceive(client_sock, clientAdd)
 
 # VERY END
 client_sock.close()
